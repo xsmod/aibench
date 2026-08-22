@@ -14,8 +14,13 @@
     },
     "prompts": {
       "type": "object",
-      "description": "Prompt set name → what is being tested: an instructions file plus 0..n starter scripts. Profiles pin a set by name (prompt:); /prompt switches sets at runtime.",
+      "description": "Prompt set name → what is being tested: an instructions file plus 0..n starter scripts and 0..n tools references. Profiles pin a set by name (prompt:); /prompt switches sets at runtime.",
       "additionalProperties": { "$ref": "#/$defs/promptset" }
+    },
+    "tools": {
+      "type": "object",
+      "description": "Tools key → tool file path (declarations + bindings; see docs/tool-catalog.md). Prompt sets reference keys, so one file serves many sets.",
+      "additionalProperties": { "type": "string" }
     }
   },
   "$defs": {
@@ -119,6 +124,11 @@
           "type": "array",
           "items": { "type": "string" },
           "description": "Starter-script files, each one scripted conversation (markdown, one ## title per prompt). Declaring any makes launch offer the /starters selection — nothing auto-sends; also played headless by `aibench send --script`."
+        },
+        "tools": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Keys of the top-level tools map, merged in list order (tools arrays concatenate; any other colliding field or binding name is an error)."
         }
       }
     }
