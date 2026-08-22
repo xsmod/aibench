@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/petrsx/aibench/main/internal/config/schema.json",
-  "title": "aibench profiles",
-  "description": "Profiles for aibench (aibench.yaml): which gateway/provider to talk to. Mirrors the strict parser in internal/config — unknown keys are errors there and here. The app never writes this file; everything it persists lives in the internal/ folder beside it.",
+  "$id": "https://raw.githubusercontent.com/xsmod/aibench/main/schema/aibench.schema.json",
+  "title": "aibench config",
+  "description": "Config for aibench (aibench.yaml): profiles say which gateway/provider to talk to, prompt sets say what is being tested — the two switch independently. Mirrors the strict parser in internal/config — unknown keys are errors there and here. The app never writes this file; it persists into settings.json beside it.",
   "type": "object",
   "additionalProperties": false,
   "required": ["profiles"],
@@ -11,6 +11,11 @@
       "type": "object",
       "description": "Profile name → endpoint selection.",
       "additionalProperties": { "$ref": "#/$defs/profile" }
+    },
+    "prompts": {
+      "type": "object",
+      "description": "Prompt set name → what is being tested: an instructions file plus 0..n starter scripts. Profiles pin a set by name (prompt:); /prompt switches sets at runtime.",
+      "additionalProperties": { "$ref": "#/$defs/promptset" }
     }
   },
   "$defs": {
@@ -26,7 +31,10 @@
         },
         "api": { "$ref": "#/$defs/api" },
         "auth": { "$ref": "#/$defs/auth" },
-        "prompt": { "$ref": "#/$defs/prompt" }
+        "prompt": {
+          "type": "string",
+          "description": "Optional pin: the prompt set (a top-level prompts: name) this profile starts on. Without it the session keeps its current set. An agent may pin only a starters-only set — it owns its instructions server-side."
+        }
       },
       "allOf": [
         {
@@ -37,11 +45,6 @@
                 "properties": {
                   "type": false,
                   "store": false
-                }
-              },
-              "prompt": {
-                "properties": {
-                  "file": false
                 }
               }
             }
@@ -103,18 +106,19 @@
         }
       }
     },
-    "prompt": {
+    "promptset": {
       "type": "object",
-      "description": "The prompt preset and its starter prompts.",
+      "description": "One prompt set: what is being tested against whatever endpoint is active.",
       "additionalProperties": false,
       "properties": {
-        "file": {
+        "instructions": {
           "type": "string",
-          "description": "The prompt preset file (markdown + YAML frontmatter, hot-reloaded). Model kind only — an agent owns its instructions server-side."
+          "description": "The system-prompt file (markdown + YAML frontmatter params, hot-reloaded) — the responses api's term; on chat/messages it lands as the system message. Omit for a starters-only set."
         },
         "starters": {
-          "type": "string",
-          "description": "The starter-prompts file (markdown, one ## title per prompt): auto-played on TUI launch as a scripted conversation, replayable from the app, seeded into the composer's input history, played headless by `aibench send --script`. Valid on every kind."
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Starter-script files, each one scripted conversation (markdown, one ## title per prompt). Declaring any makes launch offer the /starters selection — nothing auto-sends; also played headless by `aibench send --script`."
         }
       }
     }
