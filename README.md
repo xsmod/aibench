@@ -14,14 +14,21 @@ repo — copies here are published from there. Pricing is harvested from
 [catwalk](https://catwalk.charm.land) and republished here so the app has
 one stable, curated address.
 
-## Pinning a version
+## Versioning
 
-The `main` in every URL above is a git ref. To stay on a specific schema
-or pricing version, replace it with a tag or commit SHA of this repo:
+The ref in every URL above is a git ref of this repo, and that is the
+whole versioning story:
+
+- **Released aibench binaries** write config modelines pinned to the tag
+  matching their own version (`vX.Y.Z`) — cutting that tag here is part of
+  every aibench release.
+- **`main`** is the verification branch: schema changes land here first
+  (dev builds of aibench point at it), then get tagged.
+- Pin anything yourself by putting a tag or commit SHA in your modeline:
 
 ```
 https://raw.githubusercontent.com/xsmod/aibench/<tag-or-sha>/schema/aibench.schema.json
 ```
 
-Tags are cut here whenever the schema changes shape; `main` always serves
-the latest.
+Pricing is consumed from `main` regardless of app version — rates change
+on their own clock.
