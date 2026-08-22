@@ -11,8 +11,12 @@ artifacts.
 
 The schema's source of truth is `internal/config/schema.json` in the app
 repo — copies here are published from there. Pricing is harvested from
-[catwalk](https://catwalk.charm.land) and republished here so the app has
-one stable, curated address.
+[catwalk](https://catwalk.charm.land) (`aibench cost update --from-catwalk
+--out pricing/pricing.yaml`) and republished here so the app has one
+stable, curated address. **Rate fixes and missing models: PRs against
+`pricing/pricing.yaml` welcome** — aibench merges this table under each
+user's local overrides, so a fix here reaches everyone on their next
+launch.
 
 ## Versioning
 
