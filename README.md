@@ -17,18 +17,14 @@ one stable, curated address.
 ## Versioning
 
 The ref in every URL above is a git ref of this repo, and that is the
-whole versioning story:
-
-- **Released aibench binaries** write config modelines pinned to the tag
-  matching their own version (`vX.Y.Z`) — cutting that tag here is part of
-  every aibench release.
-- **`main`** is the verification branch: schema changes land here first
-  (dev builds of aibench point at it), then get tagged.
-- Pin anything yourself by putting a tag or commit SHA in your modeline:
+whole versioning story. aibench points at **`main`** (evergreen — the
+modeline is editor-only lint; the binary's strict parser is the real
+contract and never reads it). To freeze your editor's schema, put a tag
+or commit SHA in your own modeline:
 
 ```
 https://raw.githubusercontent.com/xsmod/aibench/<tag-or-sha>/schema/aibench.schema.json
 ```
 
-Pricing is consumed from `main` regardless of app version — rates change
-on their own clock.
+Tags are cut here when the schema changes shape. Pricing is consumed from
+`main` always — rates change on their own clock.
